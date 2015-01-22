@@ -1,2 +1,2 @@
 # tornado-websocket-client-example
-Websocket client application built on top of Tornado.
+Websocket client application example built on top of Tornado.
