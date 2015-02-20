@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from tornado.ioloop import IOLoop
+from tornado.ioloop import IOLoop, PeriodicCallback
 from tornado import gen
 from tornado.websocket import websocket_connect
 
@@ -13,6 +13,7 @@ class Client(object):
         self.ioloop = IOLoop.instance()
         self.ws = None
         self.connect()
+	PeriodicCallback(self.keep_alive, 20000, io_loop=self.ioloop).start()
         self.ioloop.start()
 
     @gen.coroutine
@@ -21,7 +22,7 @@ class Client(object):
         try:
             self.ws = yield websocket_connect(self.url)
         except Exception, e:
-            self.ioloop.call_later(self.timeout, self.connect)
+            print "connection error"
         else:
             print "connected"
             self.run()
@@ -33,9 +34,13 @@ class Client(object):
             if msg is None:
                 print "connection closed"
                 self.ws = None
-                self.ioloop.call_later(self.timeout, self.connect)
                 break
-                
+
+    def keep_alive(self):
+        if self.ws is None:
+            self.connect()
+        else:
+            self.ws.write_message("keep alive")
 
 if __name__ == "__main__":
     client = Client("ws://localhost:3000", 5)

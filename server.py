@@ -27,7 +27,10 @@ class MainHandler(tornado.websocket.WebSocketHandler):
         logging.info("A client connected.")
 
     def on_close(self):
-        logging.info("A device disconnected")
+        logging.info("A client disconnected")
+
+    def on_message(self, message):
+        logging.info("message: {}".format(message))
 
 
 def main():
