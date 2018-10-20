@@ -13,7 +13,7 @@ class Client(object):
         self.ioloop = IOLoop.instance()
         self.ws = None
         self.connect()
-	PeriodicCallback(self.keep_alive, 20000, io_loop=self.ioloop).start()
+	PeriodicCallback(self.keep_alive, 20000).start()
         self.ioloop.start()
 
     @gen.coroutine
